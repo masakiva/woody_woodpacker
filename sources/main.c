@@ -6,20 +6,45 @@
 /*   By: mvidal-a <mvidal-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 17:23:21 by mvidal-a          #+#    #+#             */
-/*   Updated: 2022/12/10 17:45:38 by mvidal-a         ###   ########.fr       */
+/*   Updated: 2022/12/10 18:02:52 by mvidal-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "error.h"
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdio.h>
+
+void	read_file(char* path)
+{
+	char*	file_contents;
+	char*	line;
+	int		fd;
+	int		ret;
+
+	fd = open(path, O_RDONLY);
+	if (fd == ERROR)
+		error_exit(OPEN_ERR);
+
+	file_contents = ft_strdup("");
+	ret = TRUE;
+	while (ret == TRUE)
+	{
+		ret = get_next_line(fd, &line);
+		if (ret == ERROR)
+			error_exit(GNL_ERR);
+		file_contents = strjoin_free(file_contents, line);
+		if (file_contents == NULL)
+			error_exit(MALLOC_ERR);
+		free(line);
+	}
+	printf("%s\n", file_contents);
+}
 
 int		main(int argc, char** argv)
 {
 	t_byte	options;
-	int		fd;
 
 	if (argc != 2)
 	{
@@ -35,9 +60,7 @@ int		main(int argc, char** argv)
 		return (EXIT_SUCCESS);
 	}
 
-	fd = open(argv[1], O_RDONLY);
-	if (fd == ERROR)
-		error_exit(OPEN_ERR);
+	read_file(argv[1]);
 
 	return (EXIT_SUCCESS);
 }
