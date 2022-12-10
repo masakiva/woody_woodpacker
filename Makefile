@@ -6,7 +6,7 @@
 #    By: mvidal-a <mvidal-a@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/10 17:11:10 by mvidal-a          #+#    #+#              #
-#    Updated: 2022/12/10 17:18:25 by mvidal-a         ###   ########.fr        #
+#    Updated: 2022/12/10 17:47:24 by mvidal-a         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,14 +31,15 @@ OBJS_PATH		+= objects/
 ################## SOURCES ######################
 #-----------------------------------------------#
 SRCS		+= main.c
-#SRCS		+= error.c
+SRCS		+= error.c
+SRCS		+= arg_options.c
 
 vpath %.c $(SRCS_PATH)
 
 #-----------------------------------------------#
 ################## HEADERS ######################
 #-----------------------------------------------#
-#HDRS		+= error.h
+HDRS		+= error.h
 
 vpath %.h $(HDRS_PATH)
 
@@ -63,14 +64,10 @@ CPPFLAGS	+= -I $(HDRS_PATH)
 ################# LIBRARIES #####################
 #-----------------------------------------------#
 LIBFT_PATH	+= libft/
-
 LIBFT_NAME	+= libft.a
-
-CPPFLAGS		+= -I $(LIBFT_PATH)
-
-LDFLAGS			+= -L $(LIBFT_PATH)
-
-LDLIBS			+= -lft
+CPPFLAGS	+= -I $(LIBFT_PATH)
+LDFLAGS		+= -L $(LIBFT_PATH)
+LDLIBS		+= -lft
 
 #-----------------------------------------------#
 ################### DEBUG #######################
