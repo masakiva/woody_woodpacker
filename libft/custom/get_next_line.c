@@ -6,7 +6,7 @@
 /*   By: mvidal-a <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/03 14:28:23 by mvidal-a          #+#    #+#             */
-/*   Updated: 2022/11/07 11:10:21 by mvidal-a         ###   ########.fr       */
+/*   Updated: 2022/12/10 18:08:08 by mvidal-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,17 @@ static int	recursive(char **line, size_t index, int fd)
 		ret = recursive(line, index + 1, fd);
 		if (ret != ERROR)
 			(*line)[index] = buf;
+	}
+	else if (ret == 1 && buf == '\n')
+	{
+		*line = (char *)malloc(sizeof(char) * (index + 2));
+		if (*line != NULL)
+		{
+			(*line)[index] = buf;
+			(*line)[index + 1] = '\0';
+		}
+		else
+			ret = ERROR;
 	}
 	else if (ret != ERROR)
 	{
