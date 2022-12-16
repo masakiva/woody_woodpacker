@@ -6,7 +6,7 @@
 /*   By: mvidal-a <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/03 14:28:23 by mvidal-a          #+#    #+#             */
-/*   Updated: 2022/12/10 18:08:08 by mvidal-a         ###   ########.fr       */
+/*   Updated: 2022/12/16 23:10:30 by mvidal-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-static int	recursive(char **line, size_t index, int fd)
+static ssize_t	recursive(char **line, size_t index, int fd)
 {
 	char	buf;
-	int		ret;
+	ssize_t	ret;
 
 	ret = read(fd, &buf, 1);
 	if (ret == 1 && buf != '\n')
@@ -48,7 +48,7 @@ static int	recursive(char **line, size_t index, int fd)
 	return (ret);
 }
 
-int			get_next_line(int fd, char **line)
+ssize_t		get_next_line(int fd, char **line)
 {
 	return (recursive(line, 0, fd));
 }

@@ -6,7 +6,7 @@
 /*   By: mvidal-a <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/04 12:29:06 by mvidal-a          #+#    #+#             */
-/*   Updated: 2022/12/02 20:27:04 by mvidal-a         ###   ########.fr       */
+/*   Updated: 2022/12/16 23:01:18 by mvidal-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ t_list			*ft_lstmap(t_list *lst, void *(*f)(void *),
 **	custom functions
 */
 
-int				get_next_line(int fd, char **line);
+ssize_t			get_next_line(int fd, char **line);
 ssize_t			ft_index(char *haystack, char needle);
 void			ft_swap(void **a, void **b);
 
