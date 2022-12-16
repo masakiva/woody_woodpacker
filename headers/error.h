@@ -6,7 +6,7 @@
 /*   By: mvidal-a <mvidal-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 17:32:32 by mvidal-a          #+#    #+#             */
-/*   Updated: 2022/12/10 19:46:20 by mvidal-a         ###   ########.fr       */
+/*   Updated: 2022/12/16 23:32:41 by mvidal-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ enum		e_errcode
 	MALLOC_ERR,
 	WRITE_ERR,
 	OPEN_ERR,
-	GNL_ERR,
+	CLOSE_ERR,
+	READ_ERR,
+	MMAP_ERR,
+	MUNMAP_ERR,
 	_ERRNO_END_,
 };
 

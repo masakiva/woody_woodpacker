@@ -6,7 +6,7 @@
 /*   By: mvidal-a <mvidal-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 17:23:21 by mvidal-a          #+#    #+#             */
-/*   Updated: 2022/12/10 18:02:52 by mvidal-a         ###   ########.fr       */
+/*   Updated: 2022/12/16 23:39:28 by mvidal-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,31 +15,52 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <sys/mman.h>
+
+#define BUFFER_SIZE 4096
+
+size_t	get_file_size(int fd)
+{
+	size_t	file_size;
+	ssize_t	ret;
+	char	buf[BUFFER_SIZE];
+
+	file_size = 0;
+	ret = BUFFER_SIZE;
+	while (ret == BUFFER_SIZE)
+	{
+		ret = read(fd, &buf, BUFFER_SIZE);
+		file_size += ret;
+	}
+	if (ret == ERROR)
+		error_exit(READ_ERR);
+
+	return (file_size);
+}
 
 void	read_file(char* path)
 {
-	char*	file_contents;
-	char*	line;
+	size_t	file_size;
 	int		fd;
-	int		ret;
+	char	*file_in_mem;
 
-	fd = open(path, O_RDONLY);
+	fd = open(path, O_RDWR);
 	if (fd == ERROR)
 		error_exit(OPEN_ERR);
 
-	file_contents = ft_strdup("");
-	ret = TRUE;
-	while (ret == TRUE)
-	{
-		ret = get_next_line(fd, &line);
-		if (ret == ERROR)
-			error_exit(GNL_ERR);
-		file_contents = strjoin_free(file_contents, line);
-		if (file_contents == NULL)
-			error_exit(MALLOC_ERR);
-		free(line);
-	}
-	printf("%s\n", file_contents);
+	file_size = get_file_size(fd);
+
+	file_in_mem = mmap(NULL, file_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+	if (file_in_mem == MAP_FAILED)
+		error_exit(MMAP_ERR);
+
+//	file_in_mem[0] = 'c';
+
+	if (munmap(file_in_mem, file_size) == ERROR)
+		error_exit(MUNMAP_ERR);
+
+	if (close(fd) == ERROR)
+		error_exit(CLOSE_ERR);
 }
 
 int		main(int argc, char** argv)
