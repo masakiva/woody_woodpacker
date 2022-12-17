@@ -6,7 +6,7 @@
 /*   By: mvidal-a <mvidal-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 17:23:21 by mvidal-a          #+#    #+#             */
-/*   Updated: 2022/12/17 18:40:34 by mvidal-a         ###   ########.fr       */
+/*   Updated: 2022/12/17 20:12:30 by mvidal-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,43 +67,43 @@ void	unmap_file(char* file_in_mem, size_t file_size)
 		error_exit(MUNMAP_ERR);
 }
 
-char*	get_output_filename(void)
+char*	get_outfile_name(void)
 {
-	char*		output_filename;
+	char*		outfile_name;
 	char*		index_str;
 	static int	index = 1;
 
 	if (index == 1)
 	{
 		index++;
-		return (ft_strdup(OUTPUT_FILENAME));
+		return (ft_strdup(OUTFILE_NAME));
 	}
 	index_str = ft_itoa(index);
 	if (index_str == NULL)
 		return (NULL);
-	output_filename = ft_strjoin(OUTPUT_FILENAME, index_str);
+	outfile_name = ft_strjoin(OUTFILE_NAME, index_str);
 	free(index_str);
 	index++;
-	return (output_filename);
+	return (outfile_name);
 }
 
 
-int		create_output_file(void)
+int		create_outfile(void)
 {
-	char*	output_filename;
+	char*	outfile_name;
 	int		fd;
 
 	fd = ERROR;
 	while (fd == ERROR)
 	{
-		output_filename = get_output_filename();
-		if (output_filename == NULL)
+		outfile_name = get_outfile_name();
+		if (outfile_name == NULL)
 			error_exit(MALLOC_ERR);
-		fd = open(output_filename, O_WRONLY | O_CREAT | O_EXCL,
+		fd = open(outfile_name, O_WRONLY | O_CREAT | O_EXCL,
 				S_IRUSR | S_IWUSR | S_IXUSR
 				| S_IRGRP | S_IXGRP
 				| S_IROTH | S_IXOTH);
-		free(output_filename);
+		free(outfile_name);
 		if (fd == ERROR && errno != EEXIST)
 			error_exit(OPEN_ERR);
 	}
@@ -115,6 +115,7 @@ int		main(int argc, char** argv)
 {
 	char*	input_file_contents;
 	size_t	file_size;
+	int		outfile_fd;
 	t_byte	options;
 
 	if (argc != 2)
@@ -133,9 +134,9 @@ int		main(int argc, char** argv)
 
 	input_file_contents = map_input_file(argv[1], &file_size);
 
-	unmap_file(input_file_contents, file_size);
+	outfile_fd = create_outfile();
 
-	create_output_file();
+	unmap_file(input_file_contents, file_size);
 
 	return (EXIT_SUCCESS);
 }

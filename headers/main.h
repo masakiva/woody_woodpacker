@@ -6,7 +6,7 @@
 /*   By: mvidal-a <mvidal-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/17 18:12:32 by mvidal-a          #+#    #+#             */
-/*   Updated: 2022/12/17 18:13:30 by mvidal-a         ###   ########.fr       */
+/*   Updated: 2022/12/17 20:10:53 by mvidal-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,6 @@
 
 # define BUFFER_SIZE	4096
 
-# define OUTPUT_FILENAME	"woody"
+# define OUTFILE_NAME	"woody"
 
 #endif // MAIN_H
