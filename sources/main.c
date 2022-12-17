@@ -6,7 +6,7 @@
 /*   By: mvidal-a <mvidal-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 17:23:21 by mvidal-a          #+#    #+#             */
-/*   Updated: 2022/12/16 23:39:28 by mvidal-a         ###   ########.fr       */
+/*   Updated: 2022/12/17 16:51:42 by mvidal-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,33 +38,38 @@ size_t	get_file_size(int fd)
 	return (file_size);
 }
 
-void	read_file(char* path)
+char*	map_file_in_mem(char* path, size_t* file_size)
 {
-	size_t	file_size;
-	int		fd;
 	char	*file_in_mem;
+	int		fd;
 
 	fd = open(path, O_RDWR);
 	if (fd == ERROR)
 		error_exit(OPEN_ERR);
 
-	file_size = get_file_size(fd);
+	*file_size = get_file_size(fd);
 
-	file_in_mem = mmap(NULL, file_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+	file_in_mem = mmap(NULL, *file_size, PROT_READ | PROT_WRITE, MAP_SHARED,
+			fd, 0);
 	if (file_in_mem == MAP_FAILED)
 		error_exit(MMAP_ERR);
 
-//	file_in_mem[0] = 'c';
-
-	if (munmap(file_in_mem, file_size) == ERROR)
-		error_exit(MUNMAP_ERR);
-
 	if (close(fd) == ERROR)
 		error_exit(CLOSE_ERR);
+
+	return (file_in_mem);
+}
+
+void	unmap_file(char* file_in_mem, size_t file_size)
+{
+	if (munmap(file_in_mem, file_size) == ERROR)
+		error_exit(MUNMAP_ERR);
 }
 
 int		main(int argc, char** argv)
 {
+	char*	file_in_mem;
+	size_t	file_size;
 	t_byte	options;
 
 	if (argc != 2)
@@ -81,7 +86,9 @@ int		main(int argc, char** argv)
 		return (EXIT_SUCCESS);
 	}
 
-	read_file(argv[1]);
+	file_in_mem = map_file_in_mem(argv[1], &file_size);
+
+	unmap_file(file_in_mem, file_size);
 
 	return (EXIT_SUCCESS);
 }
