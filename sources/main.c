@@ -6,7 +6,7 @@
 /*   By: mvidal-a <mvidal-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 17:23:21 by mvidal-a          #+#    #+#             */
-/*   Updated: 2022/12/20 15:54:29 by mvidal-a         ###   ########.fr       */
+/*   Updated: 2022/12/20 16:13:19 by mvidal-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,25 +114,35 @@ int		create_outfile(void)
 
 void	check_input_file(char* input_file_contents)
 {
-	Elf64_Ehdr	elf_header;
+	Elf64_Ehdr	*input_elf_header;
+	Elf64_Ehdr	exec64bit_elf_header;
 
-	elf_header.e_ident[0] = 0x7f; // magic number (four bytes)
-	elf_header.e_ident[1] = 0x45; // 'E'
-	elf_header.e_ident[2] = 0x4c; // 'L'
-	elf_header.e_ident[3] = 0x46; // 'F'
-	if (ft_memcmp(input_file_contents, elf_header.e_ident, 4) != 0)
+	input_elf_header = (Elf64_Ehdr*)input_file_contents;
+
+	exec64bit_elf_header.e_ident[0] = 0x7f; // magic number (four bytes)
+	exec64bit_elf_header.e_ident[1] = 0x45; // 'E'
+	exec64bit_elf_header.e_ident[2] = 0x4c; // 'L'
+	exec64bit_elf_header.e_ident[3] = 0x46; // 'F'
+	if (ft_memcmp(input_elf_header->e_ident,
+				exec64bit_elf_header.e_ident, 4) != 0)
 		error_exit(NOT_ELF);
-	elf_header.e_ident[4] = 0x02; // 64-bit format
-	if (ft_memcmp(input_file_contents + 4, elf_header.e_ident + 4, 1) != 0)
+	exec64bit_elf_header.e_ident[4] = 0x02; // 64-bit format
+	if (ft_memcmp(input_elf_header->e_ident + 4,
+				exec64bit_elf_header.e_ident + 4, 1) != 0)
 		error_exit(NOT_64BITS);
 	// endianness?
-	elf_header.e_ident[6] = 0x01; // version 1
-	if (ft_memcmp(input_file_contents + 6, elf_header.e_ident + 6, 1) != 0)
+	exec64bit_elf_header.e_ident[6] = 0x01; // version 1
+	if (ft_memcmp(input_elf_header->e_ident + 6,
+				exec64bit_elf_header.e_ident + 6, 1) != 0)
 		error_exit(BAD_VER);
 
-	if ((Elf64_Half)*(input_file_contents + EI_NIDENT) != 0x2 && // ET_EXEC type
-			(Elf64_Half)*(input_file_contents + EI_NIDENT) != 0x3) // ET_DYN
+	if (input_elf_header->e_type != 0x2 // ET_EXEC type
+			&& input_elf_header->e_type != 0x3) // ET_DYN type
 		error_exit(BAD_TYPE);
+	if ((void*)input_elf_header->e_entry == NULL)
+		error_exit(NO_ENTRYPOINT);
+	if ((void*)input_elf_header->e_phoff == NULL)
+		error_exit(NO_PHTABLE);
 }
 
 int		main(int argc, char** argv)

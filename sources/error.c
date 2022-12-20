@@ -6,7 +6,7 @@
 /*   By: mvidal-a <mvidal-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 17:34:18 by mvidal-a          #+#    #+#             */
-/*   Updated: 2022/12/20 15:47:20 by mvidal-a         ###   ########.fr       */
+/*   Updated: 2022/12/20 16:14:58 by mvidal-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ int		error_exit(enum e_errcode errcode)
 		"ELF file is not of 64-bit format",
 		"Only ELF file of version 1 is supported",
 		"Only ELF files of type ET_EXEC or ET_DYN are supported",
+		"ELF executable does not have any entry point",
+		"ELF executable does not have any program header table",
 	};
 
 	ft_putstr_fd("[computorv1] error: ", STDERR_FILENO);
