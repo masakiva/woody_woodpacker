@@ -6,7 +6,7 @@
 /*   By: mvidal-a <mvidal-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 17:32:32 by mvidal-a          #+#    #+#             */
-/*   Updated: 2022/12/16 23:32:41 by mvidal-a         ###   ########.fr       */
+/*   Updated: 2022/12/20 15:46:32 by mvidal-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,10 @@ enum		e_errcode
 	MMAP_ERR,
 	MUNMAP_ERR,
 	_ERRNO_END_,
+	NOT_ELF,
+	NOT_64BITS,
+	BAD_VER,
+	BAD_TYPE,
 };
 
 t_byte	retrieve_options(int argc, char **argv, char *op_chars);

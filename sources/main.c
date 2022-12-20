@@ -6,7 +6,7 @@
 /*   By: mvidal-a <mvidal-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/10 17:23:21 by mvidal-a          #+#    #+#             */
-/*   Updated: 2022/12/17 20:12:30 by mvidal-a         ###   ########.fr       */
+/*   Updated: 2022/12/20 15:54:29 by mvidal-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <errno.h>
+#include "elf.h"
 
 #include <stdio.h>
 
@@ -111,11 +112,34 @@ int		create_outfile(void)
 	return (fd);
 }
 
+void	check_input_file(char* input_file_contents)
+{
+	Elf64_Ehdr	elf_header;
+
+	elf_header.e_ident[0] = 0x7f; // magic number (four bytes)
+	elf_header.e_ident[1] = 0x45; // 'E'
+	elf_header.e_ident[2] = 0x4c; // 'L'
+	elf_header.e_ident[3] = 0x46; // 'F'
+	if (ft_memcmp(input_file_contents, elf_header.e_ident, 4) != 0)
+		error_exit(NOT_ELF);
+	elf_header.e_ident[4] = 0x02; // 64-bit format
+	if (ft_memcmp(input_file_contents + 4, elf_header.e_ident + 4, 1) != 0)
+		error_exit(NOT_64BITS);
+	// endianness?
+	elf_header.e_ident[6] = 0x01; // version 1
+	if (ft_memcmp(input_file_contents + 6, elf_header.e_ident + 6, 1) != 0)
+		error_exit(BAD_VER);
+
+	if ((Elf64_Half)*(input_file_contents + EI_NIDENT) != 0x2 && // ET_EXEC type
+			(Elf64_Half)*(input_file_contents + EI_NIDENT) != 0x3) // ET_DYN
+		error_exit(BAD_TYPE);
+}
+
 int		main(int argc, char** argv)
 {
 	char*	input_file_contents;
 	size_t	file_size;
-	int		outfile_fd;
+	//int		outfile_fd;
 	t_byte	options;
 
 	if (argc != 2)
@@ -134,7 +158,9 @@ int		main(int argc, char** argv)
 
 	input_file_contents = map_input_file(argv[1], &file_size);
 
-	outfile_fd = create_outfile();
+	check_input_file(input_file_contents);
+
+	//outfile_fd = create_outfile();
 
 	unmap_file(input_file_contents, file_size);
 
